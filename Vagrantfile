@@ -9,6 +9,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
 
+  config.vm.hostname = "php-dev"
+
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "precise64"
 
@@ -54,6 +56,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #
   # View the documentation for the provider you're using for more
   # information on available options.
+  
+  # The path to the Berksfile to use with Vagrant Berkshelf
+  config.berkshelf.berksfile_path = "./Berksfile"
+  
+  # Enable the berkshelf plugin
+  config.berkshelf.enabled = true
 
   # Enable provisioning with Puppet stand alone.  Puppet manifests
   # are contained in a directory path relative to this Vagrantfile.
