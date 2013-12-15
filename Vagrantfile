@@ -13,7 +13,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # 11.4 for provisioning. 11.4 is not the latest (that
   # is currently 11.8) but 11.8 was acting a little 
   # strange.
-  config.omnibus.chef_version = '11.4'
+  config.omnibus.chef_version = '11.4.0'
 
   config.vm.hostname = "php-dev"
 
@@ -103,7 +103,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #chef.add_role "web"
   
     # You may also specify custom JSON attributes:
-    chef.json = { :mysql_password => "foo" }
+    chef.json = { 
+      :mysql => {
+        :server_root_password => "root",
+        :server_repl_password => "root",
+        :server_debian_password => "mysqlroot",
+      }
+    }
 
     chef.run_list = [
           #"recipe[apt::default]",

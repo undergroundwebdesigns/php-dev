@@ -14,7 +14,7 @@ include_recipe "vim"
 include_recipe "php"
 
 # Install MySQL:
-include_recipe "mysql"
+include_recipe "mysql::server"
 
 # Install Apache 2:
 include_recipe "apache2"
