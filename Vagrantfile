@@ -8,15 +8,21 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # All Vagrant configuration is done here. The most common configuration
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
+  
+  # Configures the omnibus-chef plugin to install chef
+  # 11.4 for provisioning. 11.4 is not the latest (that
+  # is currently 11.8) but 11.8 was acting a little 
+  # strange.
+  config.omnibus.chef_version = '11.4'
 
   config.vm.hostname = "php-dev"
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "precise64"
+  config.vm.box = "opscode-ubuntu-12.04"
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
-  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+  config.vm.box_url = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-12.04_chef-provisionerless.box"
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
@@ -40,7 +46,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  config.vm.synced_folder "data", "/data"
+  config.vm.synced_folder "site", "/data"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -90,16 +96,20 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # path, and data_bags path (all relative to this Vagrantfile), and adding
   # some recipes and/or roles.
   #
-  # config.vm.provision :chef_solo do |chef|
-  #   chef.cookbooks_path = "../my-recipes/cookbooks"
-  #   chef.roles_path = "../my-recipes/roles"
-  #   chef.data_bags_path = "../my-recipes/data_bags"
-  #   chef.add_recipe "mysql"
-  #   chef.add_role "web"
-  #
-  #   # You may also specify custom JSON attributes:
-  #   chef.json = { :mysql_password => "foo" }
-  # end
+  config.vm.provision :chef_solo do |chef|
+    #chef.roles_path = "../my-recipes/roles"
+    #chef.data_bags_path = "../my-recipes/data_bags"
+    #chef.add_recipe "mysql"
+    #chef.add_role "web"
+  
+    # You may also specify custom JSON attributes:
+    chef.json = { :mysql_password => "foo" }
+
+    chef.run_list = [
+          #"recipe[apt::default]",
+          "recipe[php-dev::default]",
+    ]
+  end
 
   # Enable provisioning with chef server, specifying the chef server URL,
   # and the path to the validation key (relative to this Vagrantfile).
