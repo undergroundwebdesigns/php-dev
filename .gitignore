@@ -1,6 +1,6 @@
 # Site data:
-site/*
-!site/.gitkeep
+sites/*
+!sites/.gitkeep
 
 # Ruby
 *.gem
