@@ -13,7 +13,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # 11.4 for provisioning. 11.4 is not the latest (that
   # is currently 11.8) but 11.8 was acting a little 
   # strange.
-  config.omnibus.chef_version = '11.4.0'
+  config.omnibus.chef_version = '11.6.0'
 
   config.vm.hostname = "php-dev"
 
@@ -97,24 +97,33 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # some recipes and/or roles.
   #
   config.vm.provision :chef_solo do |chef|
-    #chef.roles_path = "../my-recipes/roles"
-    #chef.data_bags_path = "../my-recipes/data_bags"
-    #chef.add_recipe "mysql"
-    #chef.add_role "web"
+    # Tell vagrant where to find chef environment files, and which
+    # one to use. For this server we want dev:
+    chef.environments_path = "environments"
+    chef.environment = "dev"
+
+    chef.data_bags_path = "data_bags"
+
+    # Including this recipe HERE, because
+    # it's only needed when using chef-solo.
+    # I'm trying to keep the actual chef
+    # files such that they'll run the same
+    # on both solo or chef-client.
+    chef.add_recipe "chef-solo-search"
+
+    chef.roles_path = "roles"
+    chef.add_role "base"
+    chef.add_role "db_master"
+    chef.add_role "webserver"
   
-    # You may also specify custom JSON attributes:
+    # Specifying mysql passwords here for the dev machine:
     chef.json = { 
       :mysql => {
-        :server_root_password => "root",
-        :server_repl_password => "root",
-        :server_debian_password => "mysqlroot",
+        :server_root_password => "dev-db-pw",
+        :server_repl_password => "dev-db-repl-pw",
+        :server_debian_password => "dev-db-debian-pw",
       }
     }
-
-    chef.run_list = [
-          #"recipe[apt::default]",
-          "recipe[php-dev::default]",
-    ]
   end
 
   # Enable provisioning with chef server, specifying the chef server URL,
